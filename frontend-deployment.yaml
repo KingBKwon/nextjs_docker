@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-service
+  template:
+    metadata:
+      labels:
+        app: front-service
+    spec:
+      containers:
+      - name: front-service
+        image: nz82g3bv.kr.private-ncr.ntruss.com/ringmybell:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: front-service
